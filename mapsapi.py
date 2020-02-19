@@ -26,3 +26,4 @@ with open(map_file, "wb") as file:
     file.write(resque2.content)
 
 os.remove(map_file)
+# первая задача
