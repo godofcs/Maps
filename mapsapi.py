@@ -26,11 +26,10 @@ class MyWidget(QMainWindow):
         self.image.setPixmap(self.pixmap)
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_PageUp:
-            self.zoom += 0.005
-        if event.key() == Qt.Key_PageDown and self.zoom != 0.001:
+        if event.key() == Qt.Key_PageUp and self.zoom > 0.001:
             self.zoom -= 0.005
-        print(self.zoom)
+        if event.key() == Qt.Key_PageDown and self.zoom < 20:
+            self.zoom += 0.005
         self.maps()
         self.pixmap = QPixmap('map.png')
         self.image.setPixmap(self.pixmap)
