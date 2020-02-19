@@ -7,20 +7,32 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtWidgets import QPushButton, QLineEdit,QLabel
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 
 
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.zoom = 0.001
         self.initUI()
 
     def initUI(self):
         self.setGeometry(200, 200, 1000, 800)
         self.maps()
-        self.pixmap = QPixmap('map.png')
         self.image = QLabel(self)
         self.image.move(50, 50)
         self.image.resize(500, 500)
+        self.pixmap = QPixmap('map.png')
+        self.image.setPixmap(self.pixmap)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_PageUp:
+            self.zoom += 0.005
+        if event.key() == Qt.Key_PageDown and self.zoom != 0.001:
+            self.zoom -= 0.005
+        print(self.zoom)
+        self.maps()
+        self.pixmap = QPixmap('map.png')
         self.image.setPixmap(self.pixmap)
 
     def maps(self):
@@ -37,7 +49,7 @@ class MyWidget(QMainWindow):
         params2 = {
             "l": "map",
             "ll": ",".join(obect_coord.split()),
-            "spn": "0.1,0.1"
+            "spn": ",".join([str(self.zoom), str(self.zoom)])
         }
         resque2 = requests.get(adres2, params=params2)
         map_file = "map.png"
