@@ -14,6 +14,16 @@ class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         self.zoom = 0.001
+        self.delta = 0.0001
+        adres = "https://geocode-maps.yandex.ru/1.x/"
+        params = {
+            "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+            "geocode": "Владивосток",
+            "format": "json"
+        }
+        resque = requests.get(adres, params=params).json()
+        obect = resque["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        self.obect_coord = obect["Point"]["pos"].split()
         self.initUI()
 
     def initUI(self):
@@ -28,26 +38,30 @@ class MyWidget(QMainWindow):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageUp and self.zoom > 0.001:
             self.zoom -= 0.005
+            self.delta += 0.005
         if event.key() == Qt.Key_PageDown and self.zoom < 20:
             self.zoom += 0.005
+            self.delta += 0.005
+        elif event.key() == Qt.Key_Left:
+            self.obect_coord[0] = str(float(self.obect_coord[0]) - self.delta)
+        elif event.key() == Qt.Key_Right:
+            self.obect_coord[0] = str(float(self.obect_coord[0]) + self.delta)
+        elif event.key() == Qt.Key_Up:
+            self.obect_coord[1] = str(float(self.obect_coord[0]) + self.delta)
+        elif event.key() == Qt.Key_Down:
+            self.obect_coord[1] = str(float(self.obect_coord[0]) - self.delta)
+        else:
+            return
+        print(self.zoom)
         self.maps()
         self.pixmap = QPixmap('map.png')
         self.image.setPixmap(self.pixmap)
 
     def maps(self):
-        adres = "https://geocode-maps.yandex.ru/1.x/"
-        params = {
-            "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-            "geocode": "Владивосток",
-            "format": "json"
-        }
-        resque = requests.get(adres, params=params).json()
-        obect = resque["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-        obect_coord = obect["Point"]["pos"]
         adres2 = "https://static-maps.yandex.ru/1.x/"
         params2 = {
             "l": "map",
-            "ll": ",".join(obect_coord.split()),
+            "ll": ",".join(self.obect_coord),
             "spn": ",".join([str(self.zoom), str(self.zoom)])
         }
         resque2 = requests.get(adres2, params=params2)
