@@ -27,10 +27,10 @@ class MyWidget(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(200, 200, 1000, 800)
+        self.setGeometry(200, 200, 500, 500)
         self.maps()
         self.image = QLabel(self)
-        self.image.move(50, 50)
+        self.image.move(0, 0)
         self.image.resize(500, 500)
         self.pixmap = QPixmap('map.png')
         self.image.setPixmap(self.pixmap)
@@ -47,9 +47,9 @@ class MyWidget(QMainWindow):
         elif event.key() == Qt.Key_Right:
             self.obect_coord[0] = str(float(self.obect_coord[0]) + self.delta)
         elif event.key() == Qt.Key_Up:
-            self.obect_coord[1] = str(float(self.obect_coord[0]) + self.delta)
+            self.obect_coord[1] = str(float(self.obect_coord[1]) + self.delta)
         elif event.key() == Qt.Key_Down:
-            self.obect_coord[1] = str(float(self.obect_coord[0]) - self.delta)
+            self.obect_coord[1] = str(float(self.obect_coord[1]) - self.delta)
         else:
             return
         print(self.zoom)
